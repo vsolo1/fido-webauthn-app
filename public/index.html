@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="robots" content="noindex, nofollow">
+	<title>FIDO2 Login // Home Lab</title>
+	<style>
+		:root {
+			--bg: #0b0f14; --panel: #111821; --border: #1f2a36; --text: #c9d4df; --muted: #7a8896;
+			--accent: #3ddc97; --warn: #f2b84b; --info: #5aa9ff;
+			--mono: "JetBrains Mono", "Fira Code", Consolas, monospace;
+			--sans: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+		}
+		* { box-sizing: border-box; }
+		body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.6; }
+		.wrap { max-width: 720px; margin: 0 auto; padding: 32px 20px 48px; }
+		h1 { color: #e8eef4; margin: 0 0 4px; }
+		.sub { color: var(--muted); margin: 0 0 28px; }
+		.card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+		.card h2 { font-family: var(--mono); font-size: 13px; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin: 0 0 12px; }
+		label { display: block; font-size: 14px; color: var(--muted); margin-bottom: 6px; }
+		input { width: 100%; padding: 10px 12px; background: #0e141c; border: 1px solid var(--border); border-radius: 6px; color: var(--text); font: 15px var(--mono); margin-bottom: 12px; }
+		button { padding: 10px 16px; border-radius: 6px; border: 1px solid var(--accent); background: rgba(61,220,151,0.12); color: var(--accent); font: 14px var(--mono); cursor: pointer; }
+		button.secondary { border-color: var(--border); background: transparent; color: var(--text); }
+		button:disabled { opacity: 0.5; cursor: wait; }
+		.row { display: flex; gap: 10px; flex-wrap: wrap; }
+		#status { font-family: var(--mono); font-size: 14px; padding: 10px 14px; border-radius: 6px; border: 1px solid var(--border); margin-bottom: 16px; }
+		#status.ok { color: var(--accent); border-color: rgba(61,220,151,0.35); }
+		#status.err { color: var(--warn); border-color: rgba(242,184,75,0.35); }
+		table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 8px 0 14px; }
+		th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+		th { font-family: var(--mono); font-size: 11px; text-transform: uppercase; color: var(--muted); }
+		td code { font-family: var(--mono); color: #e8eef4; }
+		.hint { font-size: 13px; color: var(--muted); margin: 8px 0 0; }
+		[hidden] { display: none !important; }
+		.tbl-wrap { overflow-x: auto; }
+		.actions { white-space: nowrap; text-align: right; }
+		button.small { padding: 4px 10px; font-size: 12px; margin-left: 6px; }
+		button.danger { border-color: rgba(242,184,75,0.5); background: transparent; color: var(--warn); }
+		.ev-bad { color: var(--warn); }
+		.ev-good { color: var(--accent); }
+		.muted { color: var(--muted); }
+	</style>
+</head>
+<body>
+	<div class="wrap">
+		<h1>FIDO2 / WebAuthn Login</h1>
+		<p class="sub">Passwordless accounts with security keys and passkeys. Signatures are verified server-side.</p>
+
+		<div id="status">Checking session…</div>
+
+		<!-- Shown when logged out -->
+		<section id="loggedOut" hidden>
+			<div class="card">
+				<h2>Create account</h2>
+				<label for="regUsername">Username</label>
+				<input id="regUsername" autocomplete="username webauthn" placeholder="victor">
+				<button id="btnRegister">Register with security key / passkey</button>
+			</div>
+
+			<div class="card">
+				<h2>Log in</h2>
+				<label for="loginUsername">Username (optional for passkeys)</label>
+				<input id="loginUsername" autocomplete="username webauthn" placeholder="leave blank to pick a passkey">
+				<button id="btnLogin">Log in</button>
+			</div>
+		</section>
+
+		<!-- Shown when logged in -->
+		<section id="loggedIn" hidden>
+			<div class="card">
+				<h2>Account</h2>
+				<p>Signed in as <code id="meUsername"></code> · member since <span id="meSince"></span></p>
+				<div class="row">
+					<button id="btnAddKey">Add another key</button>
+					<button id="btnLogout" class="secondary">Log out</button>
+				</div>
+			</div>
+
+			<div class="card">
+				<h2>Your keys</h2>
+				<div class="tbl-wrap">
+					<table>
+						<thead><tr><th>Name</th><th>Type</th><th>Added</th><th>Last used</th><th></th></tr></thead>
+						<tbody id="credRows"></tbody>
+					</table>
+				</div>
+				<p class="hint" id="keyHint"></p>
+			</div>
+
+			<div class="card">
+				<h2>Recent activity</h2>
+				<div class="tbl-wrap">
+					<table>
+						<thead><tr><th>When</th><th>Event</th><th>Key</th><th>IP</th><th>Browser</th></tr></thead>
+						<tbody id="activityRows"></tbody>
+					</table>
+				</div>
+				<p class="hint">Times are shown in your local time zone. Only public keys are stored on the server.</p>
+			</div>
+		</section>
+	</div>
+
+	<!-- Relative paths, so the app works at /fido/ behind Apache and at / locally -->
+	<script src="vendor/simplewebauthn-browser.js"></script>
+	<script src="app.js"></script>
+</body>
+</html>

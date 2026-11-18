@@ -1,0 +1,23 @@
+# Runs the app in the background and restarts it if it crashes.
+# Install:
+#   sudo cp deploy/fido-app.service /etc/systemd/system/
+#   (edit User= and WorkingDirectory= below to match your setup)
+#   sudo systemctl daemon-reload && sudo systemctl enable --now fido-app
+#   journalctl -u fido-app -f      # watch the logs
+
+[Unit]
+Description=Home Lab FIDO2 / WebAuthn app
+After=network.target
+
+[Service]
+Type=simple
+User=victor
+WorkingDirectory=/home/victor/victor/fido-app
+EnvironmentFile=/etc/fido-app.env
+ExecStart=/home/victor/.nvm/versions/node/v22.23.4/bin/node server.js
+Restart=on-failure
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
