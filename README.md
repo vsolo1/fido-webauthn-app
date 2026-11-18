@@ -1,6 +1,6 @@
 # FIDO2 / WebAuthn Passwordless Authentication
 
-A full-stack passwordless login system built from scratch to understand how secure authentication works end to end. Users register and sign in with a hardware security key (For my testing I used a Security Key C NFC from Yubico) or passkey designed specifically so that **no passwords and no shared secret ever crosses the network.** The server issues a random challenge, the authenticator signs it with a private key that never leaves the device, and the server verifies that signature against a stored public key.
+A full-stack passwordless login system built from scratch to understand how secure authentication works end to end. Users register and sign in with a hardware security key or passkey designed specifically so that **no passwords and no shared secret ever crosses the network.** The server issues a random challenge, the authenticator signs it with a private key that never leaves the device, and the server verifies that signature against a stored public key. *(Tested with a YubiKey Security Key C NFC and a synced Google passkey.)*
 
 Built and deployed on a self-hosted home lab behind Apache over HTTPS.
 
