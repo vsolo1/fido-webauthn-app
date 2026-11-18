@@ -1,20 +1,27 @@
 # FIDO2 / WebAuthn Passwordless Authentication
 
-A full-stack passwordless login system built from scratch to understand how secure authentication works end to end. Users register and sign in with a hardware security key or passkey — **no passwords, and no shared secret ever crosses the network.** The server issues a random challenge, the authenticator signs it with a private key that never leaves the device, and the server verifies that signature against a stored public key.
+A full-stack passwordless login system built from scratch to understand how secure authentication works end to end. Users register and sign in with a hardware security key (For my testing I used a Security Key C NFC from Yubico) or passkey designed specifically so that **no passwords and no shared secret ever crosses the network.** The server issues a random challenge, the authenticator signs it with a private key that never leaves the device, and the server verifies that signature against a stored public key.
 
 Built and deployed on a self-hosted home lab behind Apache over HTTPS.
 
-> **Why it matters:** Even if the entire database leaked, there is nothing in it an attacker could log in with — the server stores only public keys, which can verify a signature but never create one.
+> Even if the entire database leaked, there is nothing in it an attacker could log in with since the server stores only public keys, which can verify a signature but never create one.
 
 ---
 
 ## Screenshots
+<img width="1315" height="792" alt="image" src="https://github.com/user-attachments/assets/ac3b6baa-b11e-4fba-89b7-825ced2265f6" />
 
-<!-- Add your screenshots here. Example:
-![Account dashboard](docs/dashboard.png)
-![Login screen](docs/login.png)
--->
-*Account dashboard — manage keys and review sign-in activity. (Add screenshot)*
+
+> Login Screen: Users have the option to register a new account using their key, or log in using an existing key. Username is completely optional.
+> 
+
+<img width="1315" height="792" alt="image" src="https://github.com/user-attachments/assets/f16820a9-fde4-4501-b6fe-b4125716c772" />
+
+> User is prompted to **physically interact** with their key **and** provide a secure **4-digit PIN**.
+> 
+<img width="1319" height="1002" alt="image" src="https://github.com/user-attachments/assets/aba669e6-0f70-4988-9d62-45f361afdedb" />
+
+> Account dashboard: manage keys and review sign-in activity.
 
 ---
 
